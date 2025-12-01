@@ -14,14 +14,15 @@ CREATE TABLE IF NOT EXISTS events (
 CREATE TABLE IF NOT EXISTS teams (
     id TEXT PRIMARY KEY,
     name TEXT,
-    state TEXT
+    state TEXT,
+    crawled INTEGER DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS wrestlers (
     id TEXT PRIMARY KEY,
     name TEXT,
     state TEXT,
-    grade INTEGER,
+    gradYear INTEGER,
     dateOfBirth TEXT,
     teamId TEXT,
     FOREIGN KEY (teamId) REFERENCES teams(id)
@@ -36,6 +37,7 @@ CREATE TABLE IF NOT EXISTS matches (
     winType TEXT,
     eventId TEXT,
     weightClass TEXT,
+    date TEXT,
     FOREIGN KEY (topId) REFERENCES wrestlers(id),
     FOREIGN KEY (bottomId) REFERENCES wrestlers(id),
     FOREIGN KEY (winnerId) REFERENCES wrestlers(id),

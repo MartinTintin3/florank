@@ -1,0 +1,239 @@
+{
+  "divisions": [
+    {
+      "division": 1,
+      "sections": [
+        {
+          "name": "D1C/M",
+          "teams": [
+            "3834b461-34c2-46af-8527-c018714b092c",
+            "9122a6d7-8427-4ae9-a2a0-175fc13d0375",
+            "49d7373e-b54a-4a4d-93c7-2a6fe4905ce5",
+            "d4243599-9f04-4148-a6ed-91d410ed2021",
+            "3c036321-be1d-4d6a-887e-78ebcdb7be62",
+            "064c74fc-aa84-421c-b00e-4f32d95c929d",
+            "8a689566-6af2-46f0-831e-44f91b8b8c0d",
+            "827addbd-7761-4c1c-b23a-b3508f907e79",
+            "0574390a-c892-43e2-8a9e-9d2f1a42fd73",
+            "a21810fe-9b8a-4cfe-be5c-0e1ebb2a96ba",
+            "db517166-43ec-4504-8914-51cdd8ba9f97",
+            "3d6ae2bc-9718-480c-9c86-543ec23874b9",
+            "edc43337-b243-494d-84ae-971f1d57466a",
+            "b51b96be-ad0a-4614-99b2-e60b9a6a1a6b"
+          ]
+        },
+        {
+          "name": "D1N",
+          "teams": [
+            "93a7709d-0fa0-4303-82c6-83227319cda9",
+            "c30bb2bc-07ad-4aa1-baa5-a0789a27b1b5",
+            "dbb2007a-7382-4a49-87af-a821f7b2f22b",
+            "5a7745fb-402b-4b65-95d9-8f072bc754e3",
+            "4862eed0-9642-4732-99ff-c2f12060fbf4",
+            "b5ae284c-4ecb-4b25-90d2-689a024c0ef7",
+            "68abbf97-53d7-40c4-9775-b3de38a8819c",
+            "88d0a32d-18e9-465f-a529-62f98fe74556",
+            "43972fe0-86a4-4402-90da-3554444d948f",
+            "a4ee975d-be20-40f8-b0a1-dc0dd62431c3",
+            "a36d1210-eb5c-4a0c-9513-8839c161252c",
+            "ca7a71a9-5a57-46ec-b0ca-a1cbd5cca1a1",
+            "294c9aa9-6c02-45aa-b037-145046cbf472"
+          ]
+        },
+        {
+          "name": "D1S",
+          "teams": [
+            "ef23dd5e-0d28-45cd-94d7-23569af8328e",
+            "cdeadc77-2b90-4a7b-91ce-f145b0c5e31d",
+            "feafaa5c-b6c8-4426-ba89-113bcb490b52",
+            "c16f3965-6e34-446f-8b7b-4af706e92d0e",
+            "80c91a9e-a7f8-4f1a-8da5-e82d83765faa",
+            "ed873b1a-062a-499c-ac73-9cb55c3b474c",
+            "584917ed-dfa7-4c7c-bec4-a662d36e9271",
+            "c7153913-d09c-4fd9-ab66-f4351e3e3b8e",
+            "bd26358c-c490-4403-9fe8-07fec961fcc5",
+            "a55eb185-dec9-4012-9f2c-8d4bb84d5321",
+            "775b2b34-d26c-4c06-94e6-f8467e774d64",
+            "cb915907-92de-4bb9-b5d0-0ad77f31fbcc",
+            "bdef1295-72a9-4c66-9ebb-18cdd3a1a06a"
+          ]
+        },
+        {
+          "name": "D1W/C",
+          "teams": [
+            "bc092343-c461-43d3-93a7-f0dc7ef7734d",
+            "43a53390-64fd-4b49-a718-ba1daf9a70b4",
+            "3effd306-80cf-4e21-b101-5b4636dbd819",
+            "fc29bf67-bdcd-4233-aadf-672adbb28619",
+            "03dcf10a-189d-4bfa-82f0-c43b4c6fc6e0",
+            "931036f1-6fe8-4255-b344-40a68b22b1c2",
+            "e31e8f49-d264-4ceb-a937-cb1d7f801be1",
+            "d495bba2-d49c-40e0-9627-f0cf00086207",
+            "dccc7458-d0bd-4478-9db3-e574920de299",
+            "affc93cc-d87f-4d14-9453-610a48cef50c",
+            "c6a021b5-8170-43a0-9ef0-f5ec67021ac6",
+            "34bc231a-cc7a-4d3f-a877-72a3f73d8d34",
+            "8223045a-a265-4c57-beb2-aadf47ee29cf"
+          ]
+        }
+      ]
+    },
+    {
+      "division": 2,
+      "sections": [
+        {
+          "name": "D2C",
+          "teams": [
+            "0fc56144-0687-4845-998e-a4917ca0d92d",
+            "1523c6a1-850e-4fb7-8c2c-f1e34c150e27",
+            "916b77d0-25d5-4bdf-8679-2d8b801074b1",
+            "8f6abcbb-7d64-49af-baaf-4d78dc7e58aa",
+            "74a5245c-26b6-476f-ae19-70f877f28f12",
+            "d072a25a-c8b8-46ed-8f1f-24e4811f007e",
+            "96b75e83-b9bb-4bd8-9565-ef7714eb5ffb",
+            "69d1cd5b-0c27-4161-8ca9-997e35eed06f",
+            "7e27d922-d36b-4c86-8a41-e43ea2298ed1",
+            "d7224368-34af-4cf9-92ab-2be80d920b2d",
+            "f6f26ed4-9361-44c7-9284-2ac75383c5ad",
+            "57afde94-def5-4923-abdf-af5fdc3d1176",
+            "2526ab67-3c72-4560-867d-34b168ad93c3"
+          ]
+        },
+        {
+          "name": "D2N",
+          "teams": [
+            "ee230dc0-4c81-4917-bdf7-0413e89ea06f",
+            "daf9a2e9-cd89-4080-be20-6e2c4aeacf56",
+            "1301d49f-a809-4b37-98cd-5bb83946a31f",
+            "68548efa-0ab4-44aa-ba8b-14ec48884197",
+            "fadf2e9e-17fd-44f6-bb0d-36be602af88b",
+            "3db31d82-23ec-423c-9366-50d12d32b533",
+            "6c96f458-17c3-4f8f-8df3-9751db3a3807",
+            "4f1157ce-8edc-4afb-96c9-fce4f1267e17",
+            "4edcc995-df08-484c-83eb-bbd657db05cb",
+            "6935f9b3-6017-44da-b860-b86a6707b766",
+            "32277c3d-f74c-4786-8402-8be8f7a4f86b",
+            "52cdfded-39d6-4c96-abd7-772bb6428706",
+            "5248c894-2f8f-4984-be35-4b29358ee92d"
+          ]
+        },
+        {
+          "name": "D2S",
+          "teams": [
+            "60748c04-0ee0-4785-9d3d-9fc69175e15f",
+            "be4e1204-10cb-4c90-80a9-2858aafe4a63",
+            "21a33911-3ec5-4d8b-aab5-9eb383ad0ea1",
+            "6891d824-eb7a-4cd0-8ab6-7d4758e9119c",
+            "c3f32754-936e-403e-8d4f-44a34e1d412e",
+            "d2b4c425-bc97-4ad0-bfd4-8d539b6f3108",
+            "39ea8ae6-844f-48a7-b805-6ca0ac5eb67a",
+            "4aeca73c-9ee5-448a-b16f-b0af80184116",
+            "9e40564d-a0ab-4165-9b7d-f6aa698d5030",
+            "5dcbad8d-c315-4164-84a0-e819dcd0869f",
+            "2b1c4633-f59d-459d-aaec-7931810737c9",
+            "aadd9cd9-b390-4ca8-a50f-32c0fc9121d5",
+            "4727d9ab-7386-47f1-a162-617bb2fb7a49"
+          ]
+        },
+        {
+          "name": "D2W",
+          "teams": [
+            "9dee06fb-05c3-41b6-ad5c-5046543a598d",
+            "3663f4ec-1990-483e-b29c-ca33bdf48837",
+            "671e9910-4ee5-480b-85c0-ca891c27e927",
+            "e5aca2ec-aaa3-4b8f-b37f-9507b84223f1",
+            "2ad221d5-85b8-4565-b142-af4a252c176e",
+            "d03b50a3-5850-4bfd-a787-325eca6ecda2",
+            "0c39a20c-0dee-4726-b4f1-9c794e290d1a",
+            "17cf7423-7355-4116-85a3-d41f2f44a9ee",
+            "12c0e4c1-dc70-4cc1-9db9-45cdcc6a81cf",
+            "9727ba65-dc1c-46ce-8d69-60de1fc6ddc2",
+            "84a61151-6a58-419f-bef4-e54a343f4399",
+            "1711ab0e-4592-4297-bcdc-01b0af95b39e",
+            "28975a4c-0d26-4fc3-a3bc-b6b189e584c7"
+          ]
+        }
+      ]
+    },
+    {
+      "division": 3,
+      "sections": [
+        {
+          "name": "D3C",
+          "teams": [
+            "e7e7add8-6a1a-4999-821d-13115a801cee",
+            "bce939f4-442c-4b57-92bb-4541ef4d302f",
+            "cad985ce-a535-4b18-acdb-fd9cbc8773a3",
+            "4a006935-60b2-44ea-b6b0-e338deaaddc5",
+            "727d56ef-65b3-425e-84b4-fadc711c082b",
+            "1f7ce954-81fb-43fb-abbc-e250477691dc",
+            "cccfba46-f8dd-4572-b43e-21ea9312a24c",
+            "66c2ef70-4bfb-44c3-81e7-f5b342a37ca6",
+            "597cf285-4b5d-4917-8480-2e5c7ac13680",
+            "e1d4a09b-57a3-4331-8ca9-adbe69744994",
+            "1bb38ddd-8546-4516-9753-3de62916f874",
+            "1fa33fb8-7849-4563-ae6c-3963a6a1bbd7",
+            "917c2dcc-3569-43ef-8f13-0be4f232b7e5",
+            "46b263c7-f5b6-4678-8bd5-62de78805ddc"
+          ]
+        },
+        {
+          "name": "D3N",
+          "teams": [
+            "d97d30cc-fb01-4399-96a1-6267627ee378",
+            "6b3e878d-7378-4fe3-b667-d44fcd3ecd9b",
+            "5f4d7fef-dc60-4e66-aa08-c7bd3423799c",
+            "c0a01e4f-5ccb-468b-ba0d-7e5e9c760ead",
+            "56220811-e1be-46b3-9acd-33417d1175ca",
+            "ccb36803-cc89-4de1-a3de-ec06464618cf",
+            "3a7cbe4f-b17e-482c-bb8d-cef6b8551003",
+            "92f5f7dd-e4b6-4363-a7dc-bbfcdd60c99f",
+            "42ac7815-e714-481a-9bad-856948b4ca9c",
+            "c294f94a-4185-473c-b3ef-ec1efbf2a14f",
+            "d4001afd-679a-4f17-a184-a7f1007e4e97",
+            "87f5d741-057e-4dda-839a-479e2d0e32a2",
+            "5625f3bf-ef4f-480b-bd59-4ecc41adbd1c",
+            "26c9ebcb-370b-4f6d-839f-89b2a3482f87"
+          ]
+        },
+        {
+          "name": "D3S",
+          "teams": [
+            "2e7719af-1c70-4fb6-948c-508aa3f66c5d",
+            "5d27af46-a515-475c-adff-89477ac320ac",
+            "34ed2c4a-dde0-4a1a-b7a5-4eeb4194cff0",
+            "84e11ef9-b9b5-40d6-9c70-ed84999fb56a",
+            "ac941a58-8c8c-412d-8b3c-b7ced468e236",
+            "3e65837b-af6b-4447-8b16-1545402866b7",
+            "3b63611b-28b7-4eac-8fe7-a846c15462d2",
+            "cec1b751-9140-42de-88a4-06d198b4a7d8",
+            "ec2386a6-6542-420e-b5a7-42601dab405f",
+            "3c487799-c5f3-48aa-af13-e36fb3c9f3dd",
+            "47bf53f6-b52a-4bb1-b218-6e3fbf2b00d1",
+            "1b561d59-5f67-404a-96d1-2df0ad7f9f0c",
+            "5d91f1a6-a0c9-493c-a9da-13b26fe95681"
+          ]
+        },
+        {
+          "name": "D3W",
+          "teams": [
+            "62b0ff0a-820c-4309-811c-1d5b7d546ecd",
+            "2488b39a-5d13-4da6-a2a8-5ab05e39b068",
+            "4449eacc-e686-446f-b17f-2dfbc7a8cd7f",
+            "b23049f9-51b1-46ae-8322-f0a2e11bff79",
+            "f4ff85fd-ba97-4ace-9f19-39c47ddc6929",
+            "2b1c8027-9d06-4f15-aa66-8a07db0ff15a",
+            "5bfaa92f-7d6d-4594-b2a9-5fca34925880",
+            "2e344c69-013c-42f1-ac1f-b759ac206941",
+            "374977c6-d003-485f-b594-8a5b3262bd80",
+            "69428fbf-63c9-493c-a8c4-1d23eb04e6a6",
+            "fbe46988-d869-4cfd-9b13-03cd530d3aa8",
+            "e0c2de6d-212f-4f20-8d75-660e2b70a33c",
+            "236640f9-dccf-41c0-8d4b-6c4dce92e7da",
+            "a2de9d89-ac9e-4242-8f32-26dbfbe1319c"
+          ]
+        }
+      ]
+    }
+  ]
+}

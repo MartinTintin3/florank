@@ -26,6 +26,13 @@ def _init_db(conn: sqlite3.Connection) -> None:
         sql = f.read()
     conn.executescript(sql)
 
+    # Backfill crawled flag for teams table if the column does not exist yet.
+    cur = conn.execute("PRAGMA table_info(teams)")
+    columns = {row[1] if not isinstance(row, sqlite3.Row) else row["name"] for row in cur.fetchall()}
+    if "crawled" not in columns:
+        conn.execute("ALTER TABLE teams ADD COLUMN crawled INTEGER DEFAULT 0")
+        conn.commit()
+
 
 def get_connection() -> sqlite3.Connection:
     """Return a sqlite3.Connection to `data.db`, initializing schema.
@@ -74,26 +81,27 @@ def create_event(conn: sqlite3.Connection, *, event_id: str, date: Optional[str]
 
 
 def create_team(conn: sqlite3.Connection, *, team_id: str, name: Optional[str] = None,
-                state: Optional[str] = None) -> str:
+                state: Optional[str] = None, crawled: Optional[bool] = None) -> str:
     """Insert a new row into `teams`. Returns the team_id."""
     cur = conn.cursor()
+    crawled_value = _bool_to_int(crawled) if crawled is not None else 0
     cur.execute(
-        "INSERT INTO teams (id, name, state) VALUES (?, ?, ?)",
-        (team_id, name, state),
+        "INSERT INTO teams (id, name, state, crawled) VALUES (?, ?, ?, ?)",
+        (team_id, name, state, crawled_value),
     )
     conn.commit()
     return team_id
 
 
 def create_wrestler(conn: sqlite3.Connection, *, wrestler_id: str, name: Optional[str] = None,
-                    state: Optional[str] = None, grade: Optional[int] = None,
+                    state: Optional[str] = None, gradYear: Optional[int] = None,
                     dateOfBirth: Optional[str] = None, teamId: Optional[str] = None) -> str:
     """Insert a new row into `wrestlers`. Returns the wrestler_id."""
     cur = conn.cursor()
     cur.execute(
-        "INSERT INTO wrestlers (id, name, state, grade, dateOfBirth, teamId) "
+        "INSERT INTO wrestlers (id, name, state, gradYear, dateOfBirth, teamId) "
         "VALUES (?, ?, ?, ?, ?, ?)",
-        (wrestler_id, name, state, grade, dateOfBirth, teamId),
+        (wrestler_id, name, state, gradYear, dateOfBirth, teamId),
     )
     conn.commit()
     return wrestler_id
@@ -120,6 +128,22 @@ def team_exists(conn: sqlite3.Connection, team_id: str) -> bool:
     return cur.fetchone() is not None
 
 
+def is_team_crawled(conn: sqlite3.Connection, team_id: str) -> bool:
+    """Return True if a team exists and has already been crawled."""
+    cur = conn.cursor()
+    cur.execute("SELECT crawled FROM teams WHERE id = ?", (team_id,))
+    row = cur.fetchone()
+    if row is None:
+        return False
+    value = row[0] if not isinstance(row, sqlite3.Row) else row["crawled"]
+    return bool(value)
+
+
+def set_team_crawled(conn: sqlite3.Connection, team_id: str, crawled: bool = True) -> int:
+    """Mark the given team as crawled (or not)."""
+    return update_team(conn, team_id, crawled=crawled)
+
+
 def match_exists(conn: sqlite3.Connection, match_id: str) -> bool:
     """Return True if a match with `match_id` exists."""
     cur = conn.cursor()
@@ -130,13 +154,13 @@ def match_exists(conn: sqlite3.Connection, match_id: str) -> bool:
 def create_match(conn: sqlite3.Connection, *, match_id: str, topId: Optional[str] = None,
                  bottomId: Optional[str] = None, winnerId: Optional[str] = None,
                  result: Optional[str] = None, winType: Optional[str] = None,
-                 eventId: Optional[str] = None, weightClass: Optional[str] = None) -> str:
+                 eventId: Optional[str] = None, weightClass: Optional[str] = None, date: Optional[str] = None) -> str:
     """Insert a new row into `matches`. Returns the match_id."""
     cur = conn.cursor()
     cur.execute(
-        "INSERT INTO matches (id, topId, bottomId, winnerId, result, winType, eventId, weightClass) "
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-        (match_id, topId, bottomId, winnerId, result, winType, eventId, weightClass),
+        "INSERT INTO matches (id, topId, bottomId, winnerId, result, winType, eventId, weightClass, date) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        (match_id, topId, bottomId, winnerId, result, winType, eventId, weightClass, date),
     )
     conn.commit()
     return match_id
@@ -177,13 +201,15 @@ def update_event(conn: sqlite3.Connection, event_id: str, *, date: Optional[str]
 
 
 def update_team(conn: sqlite3.Connection, team_id: str, *, name: Optional[str] = None,
-                state: Optional[str] = None) -> int:
+                state: Optional[str] = None, crawled: Optional[bool] = None) -> int:
     """Update fields on the `teams` table for the given team_id."""
     fields = {}
     if name is not None:
         fields["name"] = name
     if state is not None:
         fields["state"] = state
+    if crawled is not None:
+        fields["crawled"] = _bool_to_int(crawled)
 
     if not fields:
         return 0
@@ -197,7 +223,7 @@ def update_team(conn: sqlite3.Connection, team_id: str, *, name: Optional[str] =
 
 
 def update_wrestler(conn: sqlite3.Connection, wrestler_id: str, *,
-                    grade: Optional[int] = None, dateOfBirth: Optional[str] = None,
+                    gradYear: Optional[int] = None, dateOfBirth: Optional[str] = None,
                     teamId: Optional[str] = None, name: Optional[str] = None,
                     state: Optional[str] = None) -> int:
     """Update fields on the `wrestlers` table for the given wrestler_id.
@@ -205,8 +231,8 @@ def update_wrestler(conn: sqlite3.Connection, wrestler_id: str, *,
     Only fields provided (not None) are updated. Returns number of rows updated.
     """
     fields = {}
-    if grade is not None:
-        fields["grade"] = grade
+    if gradYear is not None:
+        fields["gradYear"] = gradYear
     if dateOfBirth is not None:
         fields["dateOfBirth"] = dateOfBirth
     if teamId is not None:
@@ -230,7 +256,7 @@ def update_wrestler(conn: sqlite3.Connection, wrestler_id: str, *,
 def update_match(conn: sqlite3.Connection, match_id: str, *, topId: Optional[str] = None,
                  bottomId: Optional[str] = None, winnerId: Optional[str] = None,
                  result: Optional[str] = None, winType: Optional[str] = None,
-                 eventId: Optional[str] = None, weightClass: Optional[str] = None) -> int:
+                 eventId: Optional[str] = None, weightClass: Optional[str] = None, date: Optional[str] = None) -> int:
     """Update fields on the `matches` table for the given match_id.
 
     Only provided fields are updated. Returns number of rows updated.
@@ -250,6 +276,8 @@ def update_match(conn: sqlite3.Connection, match_id: str, *, topId: Optional[str
         fields["eventId"] = eventId
     if weightClass is not None:
         fields["weightClass"] = weightClass
+    if date is not None:
+        fields["date"] = date
 
     if not fields:
         return 0
@@ -269,6 +297,8 @@ __all__ = [
     "update_event",
     "create_team",
     "team_exists",
+    "is_team_crawled",
+    "set_team_crawled",
     "update_team",
     "create_wrestler",
     "wrestler_exists",
