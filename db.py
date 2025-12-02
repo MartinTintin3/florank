@@ -290,6 +290,34 @@ def update_match(conn: sqlite3.Connection, match_id: str, *, topId: Optional[str
     return cur.rowcount
 
 
+def backfill_match_dates(conn: sqlite3.Connection) -> int:
+    """Populate missing match dates using their related event date.
+
+    Returns the number of rows updated.
+    """
+    cur = conn.cursor()
+    cur.execute(
+        """
+        UPDATE matches
+        SET date = (
+            SELECT events.date
+            FROM events
+            WHERE events.id = matches.eventId
+        )
+        WHERE date IS NULL
+          AND eventId IS NOT NULL
+          AND EXISTS (
+              SELECT 1 FROM events
+              WHERE events.id = matches.eventId
+                AND events.date IS NOT NULL
+          )
+        ;
+        """
+    )
+    conn.commit()
+    return cur.rowcount
+
+
 __all__ = [
     "get_connection",
     "create_event",
@@ -306,4 +334,5 @@ __all__ = [
     "create_match",
     "match_exists",
     "update_match",
+    "backfill_match_dates",
 ]

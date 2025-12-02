@@ -74,6 +74,70 @@ def get_team_ids(division: int | None = None, section: str | None = None) -> lis
 	
 	return teams
 
+def get_wrestler_matches(wrestler_id: str) -> list[dict]:
+	conn = db.get_connection()
+	cur = conn.cursor()
+
+	sql = """
+SELECT
+  m.id,
+  m.eventId,
+  COALESCE(m.date, e.date) AS match_date,
+  m.weightClass,
+  m.topId,
+  m.bottomId,
+  m.winnerId,
+  m.result,
+  m.winType,
+  e.name AS event_name,
+  top_w.name AS top_name,
+  bottom_w.name AS bottom_name
+FROM matches AS m
+LEFT JOIN events AS e ON e.id = m.eventId
+LEFT JOIN wrestlers AS top_w ON top_w.id = m.topId
+LEFT JOIN wrestlers AS bottom_w ON bottom_w.id = m.bottomId
+WHERE m.topId = ? OR m.bottomId = ?
+ORDER BY (match_date IS NULL), match_date DESC;
+	"""
+	cur.execute(sql, (wrestler_id, wrestler_id))
+	rows = cur.fetchall()
+	matches = []
+
+	for (
+		match_id,
+		event_id,
+		date,
+		weight_class,
+		top_id,
+		bottom_id,
+		winner_id,
+		result,
+		win_type,
+		event_name,
+		top_name,
+		bottom_name,
+	) in rows:
+		opponent_name = bottom_name if top_id == wrestler_id else top_name
+		opponent_id = bottom_id if top_id == wrestler_id else top_id
+		matches.append({
+			"type": "win" if winner_id == wrestler_id else "loss",
+			"id": match_id,
+			"date": date,
+			"weightClass": weight_class,
+			"opponent": {
+				"id": opponent_id,
+				"name": opponent_name,
+			},
+			"result": result,
+			"winType": win_type,
+			"event": {
+				"id": event_id,
+				"name": event_name,
+			},
+		})
+	return matches
+
+
 def get_active_wrestlers(min_wins: int = 1) -> list[str]:
 	teams = get_team_ids()
 	

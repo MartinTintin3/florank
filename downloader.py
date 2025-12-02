@@ -79,8 +79,10 @@ def store_event_bout_data(data: api_types.BoutsResponse, url: str = "", progress
 	
 	lookup = {}
 
-		# find type event in included
-	event = list(filter(lambda x: x["type"] == "event", data.get("included", [])))[0]
+	# find type event in included
+	event = next((item for item in data.get("included", []) if item.get("type") == "event"), None)
+	if event is None:
+		return
 
 	for included in data.get("included", []):
 		lookup[included["id"]] = included
@@ -93,30 +95,55 @@ def store_event_bout_data(data: api_types.BoutsResponse, url: str = "", progress
 					name=attrs.get("name"),
 					state=attrs.get("state"),
 				)
+		if included["type"] == "event" and not db.event_exists(conn, included["id"]):
+			attrs = included["attributes"]
+			db.create_event(
+				conn,
+				event_id=included["id"],
+				name=attrs.get("name"),
+				date=attrs.get("startDateTime"),
+				state=attrs.get("state"),
+				isDual=attrs.get("isDual"),
+				lat=attrs.get("location", {}).get("latitude", None),
+				lon=attrs.get("location", {}).get("longitude", None),
+			)
 	
 	for included in data.get("included", []):
-		attrs = included["attributes"]
+		attrs = included.get("attributes", {})
 		if included["type"] == "wrestler":
-			team = lookup.get(attrs["teamId"])
-			team_id = team["attributes"]["identityTeamId"] if team else None
-			grade = attrs.get("grade").get("attributes", {}).get("numericValue") if attrs.get("grade") else None
-			cur_grade = utils.calc_cur_grade(past_grade=grade, past_date=event["attributes"]["startDateTime"], cur_date=datetime.now()) if grade is not None and grade >= 8 else None
+			person_id = attrs.get("identityPersonId", f"unknown_{included['id']}")
+			if not person_id:
+				continue
+			team = lookup.get(attrs.get("teamId"), {}) if attrs.get("teamId") else None
+			team_id = team.get("attributes", {}).get("identityTeamId") if team else None
+			event_attrs = event.get("attributes", {})
+			grade = None
+			if attrs.get("grade"):
+				grade = attrs["grade"].get("attributes", {}).get("numericValue")
+			cur_grade = None
+			if grade is not None and grade >= 8 and event_attrs.get("startDateTime"):
+				cur_grade = utils.calc_cur_grade(
+					past_grade=grade,
+					past_date=event_attrs["startDateTime"],
+					cur_date=datetime.now(),
+				)
+			grad_year = utils.calc_grad_year(grade=cur_grade, as_of=datetime.now()) if cur_grade is not None else None
 
-			if not db.wrestler_exists(conn, attrs["identityPersonId"]) and attrs.get("identityPersonId"):
+			if not db.wrestler_exists(conn, person_id):
 				db.create_wrestler(
 					conn,
-					wrestler_id=attrs.get("identityPersonId"),
+					wrestler_id=person_id,
 					name=f"{attrs.get('firstName', '')} {attrs.get('lastName', '')}".strip(),
 					state=attrs.get("state"),
-					grade=cur_grade,
+					gradYear=grad_year,
 					dateOfBirth=attrs.get("dateOfBirth"),
 					teamId=team_id,
 				)
 			else:
 				db.update_wrestler(
 					conn,
-					wrestler_id=attrs["identityPersonId"],
-					grade=cur_grade,
+					wrestler_id=person_id,
+					gradYear=grad_year,
 					dateOfBirth=attrs.get("dateOfBirth"),
 					teamId=team_id,
 					name=f"{attrs.get('firstName', '')} {attrs.get('lastName', '')}".strip(),
@@ -132,29 +159,35 @@ def store_event_bout_data(data: api_types.BoutsResponse, url: str = "", progress
 		if attrs.get("winnerWrestlerId") is None:
 			continue  # skip matches without a winner
 
-		top_wrestler = lookup.get(attrs["topWrestlerId"]) if attrs["topWrestlerId"] else None
-		bottom_wrestler = lookup.get(attrs["bottomWrestlerId"]) if attrs["bottomWrestlerId"] else None
+		top_wrestler = lookup.get(attrs.get("topWrestlerId")) if attrs.get("topWrestlerId") else None
+		bottom_wrestler = lookup.get(attrs.get("bottomWrestlerId")) if attrs.get("bottomWrestlerId") else None
 		winner_wrestler = lookup.get(attrs.get("winnerWrestlerId")) if attrs.get("winnerWrestlerId") else None
-		weightClass = lookup.get(attrs["weightClassId"], {}) if attrs["weightClassId"] else None
-		division = lookup.get(lookup.get(attrs["weightClassId"], {}).get("attributes", {}).get("divisionId", None), {}) if weightClass else None
+		weightClass = lookup.get(attrs.get("weightClassId"), {}) if attrs.get("weightClassId") else None
+		division_id = weightClass.get("attributes", {}).get("divisionId") if weightClass else None
+		division = lookup.get(division_id) if division_id else None
 		if not division.get("attributes", {}).get("isVarsity", True) if division else True:
 			continue  # skip non-varsity matches
-		if top_wrestler is None or top_wrestler.get("attributes", {}).get("identityPersonId") is None:
+		if top_wrestler is None:
 			continue  # skip invalid wrestlers
-		if bottom_wrestler is None or bottom_wrestler.get("attributes", {}).get("identityPersonId") is None:
+		if bottom_wrestler is None:
 			continue  # skip invalid wrestlers
+
+		date = attrs.get("startDateTime") or attrs.get("goDateTime") or attrs.get("endDateTime")
+		if date is None:
+			date = event.get("attributes", {}).get("startDateTime")
+
 		if not db.match_exists(conn, bout["id"]):
 			db.create_match(
 				conn,
 				match_id=bout["id"],
-				topId=top_wrestler["attributes"]["identityPersonId"] if top_wrestler else None,
-				bottomId=bottom_wrestler["attributes"]["identityPersonId"] if bottom_wrestler else None,
-				winnerId=winner_wrestler["attributes"]["identityPersonId"] if winner_wrestler else None,
+				topId=top_wrestler["attributes"].get("identityPersonId", f"unknown_{attrs.get('topWrestlerId')}") if top_wrestler else None,
+				bottomId=bottom_wrestler["attributes"].get("identityPersonId", f"unknown_{attrs.get('bottomWrestlerId')}") if bottom_wrestler else None,
+				winnerId=winner_wrestler["attributes"].get("identityPersonId", f"unknown_{attrs.get('winnerWrestlerId')}") if winner_wrestler else None,
 				result=attrs.get("result"),
 				winType=attrs.get("winType"),
 				eventId=event["id"],
-				weightClass=lookup.get(attrs["weightClassId"], {}).get("attributes", {}).get("name", None),
-				date=attrs.get("startDateTime", attrs.get("goDateTime", attrs.get("endDateTime", event["attributes"]["startDateTime"])))
+				weightClass=lookup.get(attrs.get("weightClassId"), {}).get("attributes", {}).get("name"),
+				date=date,
 			)
 	
 	if not utils.next_link(data, url) and not db.event_exists(conn, event["id"]):
