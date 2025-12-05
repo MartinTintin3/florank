@@ -128,6 +128,8 @@ def store_event_bout_data(data: api_types.BoutsResponse, url: str = "", progress
 					cur_date=datetime.now(),
 				)
 			grad_year = utils.calc_grad_year(grade=cur_grade, as_of=datetime.now()) if cur_grade is not None else None
+			if grad_year is None:
+				grad_year = utils.infer_grad_year_from_post(person_id)
 
 			if not db.wrestler_exists(conn, person_id):
 				db.create_wrestler(
@@ -256,6 +258,8 @@ def store_team_bout_data(data: api_types.BoutsResponse, url: str = "", progress:
 			grade = attrs.get("grade").get("attributes", {}).get("numericValue") if attrs.get("grade") else None
 			cur_grade = utils.calc_cur_grade(past_grade=grade, past_date=event["attributes"]["startDateTime"], cur_date=datetime.now()) if grade is not None and grade >= 8 else None
 			grad_year = utils.calc_grad_year(grade=cur_grade, as_of=datetime.now()) if cur_grade is not None else None
+			if grad_year is None:
+				grad_year = utils.infer_grad_year_from_post(attrs.get("identityPersonId"))
 
 			if not db.wrestler_exists(conn, attrs["identityPersonId"]) and attrs.get("identityPersonId"):
 				db.create_wrestler(

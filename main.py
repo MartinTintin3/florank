@@ -36,7 +36,7 @@ def parse_args() -> argparse.Namespace:
 		"events_file",
 		type=Path,
 		nargs="?",
-		default=Path("events/2023.json"),
+		default=Path("events/2025.json"),
 		help="Path to the JSON file containing events metadata.",
 	)
 	parser.add_argument(
