@@ -33,7 +33,7 @@ export function TeamList({ teams, wrestlersById, debugMode }: TeamListProps) {
                   </Text>
                 )}
               </div>
-              <Badge variant="light">{Object.keys(team.weights ?? {}).length} weights</Badge>
+              <Badge variant="light">{Object.keys(team.weights ?? {}).length} wrestlers</Badge>
             </Group>
           </Accordion.Control>
           <Accordion.Panel>
