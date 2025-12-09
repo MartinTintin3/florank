@@ -44,7 +44,12 @@ export function TeamsView({ data, divisions, sections, wrestlersById }: Props) {
         lineup. Use the division/section filters here if you need to narrow teams down.
       </Alert>
       <DivisionSectionControls divisions={divisions} sections={sections} />
-      <TeamList teams={teams} wrestlersById={wrestlersById} debugMode={debugMode} />
+      <TeamList
+        teams={teams}
+        wrestlersById={wrestlersById}
+        weightRankings={data.weights}
+        debugMode={debugMode}
+      />
     </>
   );
 }

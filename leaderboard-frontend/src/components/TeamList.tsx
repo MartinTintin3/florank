@@ -1,13 +1,14 @@
 import { Accordion, Badge, Card, Group, Stack, Text, Title } from '@mantine/core';
-import type { TeamEntry, WrestlerEntry } from '../types/leaderboard';
+import type { TeamEntry, WeightRankings, WrestlerEntry } from '../types/leaderboard';
 
 interface TeamListProps {
   teams: TeamEntry[];
   wrestlersById: Record<string, WrestlerEntry>;
+  weightRankings: WeightRankings;
   debugMode: boolean;
 }
 
-export function TeamList({ teams, wrestlersById, debugMode }: TeamListProps) {
+export function TeamList({ teams, wrestlersById, weightRankings, debugMode }: TeamListProps) {
   if (!teams.length) {
     return (
       <Text c="dimmed" mt="md">
@@ -57,12 +58,22 @@ export function TeamList({ teams, wrestlersById, debugMode }: TeamListProps) {
                       {wrestlerIds.map((id) => {
                         const wrestler = wrestlersById[id];
                         if (!wrestler) return null;
+                        const rankingForWeight = weightRankings[weight] ?? [];
+                        const rankIndex = rankingForWeight.indexOf(id);
+                        const rankPosition = rankIndex >= 0 ? rankIndex + 1 : null;
                         return (
                           <Group key={id} justify="space-between" wrap="wrap">
                             <div>
                               <Text>{wrestler.name}</Text>
                               <Text size="sm" c="dimmed">
-                                Record {wrestler.wins}-{wrestler.losses}
+                                {rankPosition ? `Rank #${rankPosition}` : 'Rank —'} · Record{' '}
+                                <Text component="span" c="green.5" fw={600}>
+                                  {wrestler.wins}
+                                </Text>
+                                -
+                                <Text component="span" c="red.5" fw={600}>
+                                  {wrestler.losses}
+                                </Text>
                               </Text>
                               {debugMode && (
                                 <Text size="xs" c="dimmed">

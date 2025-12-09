@@ -114,6 +114,16 @@ def wrestler_exists(conn: sqlite3.Connection, wrestler_id: str) -> bool:
     return cur.fetchone() is not None
 
 
+def get_wrestler(conn: sqlite3.Connection, wrestler_id: str) -> Optional[sqlite3.Row]:
+    """Return the wrestlers row for wrestler_id, or None if missing."""
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT id, name, gradYear, dateOfBirth, teamId, state FROM wrestlers WHERE id = ?",
+        (wrestler_id,),
+    )
+    return cur.fetchone()
+
+
 def event_exists(conn: sqlite3.Connection, event_id: str) -> bool:
     """Return True if an event with `event_id` exists."""
     cur = conn.cursor()
@@ -329,6 +339,7 @@ __all__ = [
     "set_team_crawled",
     "update_team",
     "create_wrestler",
+    "get_wrestler",
     "wrestler_exists",
     "update_wrestler",
     "create_match",

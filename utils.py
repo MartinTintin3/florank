@@ -216,7 +216,7 @@ def get_active_wrestlers(min_wins: int = 1) -> list[str]:
 		GROUP BY w.id
 		HAVING COUNT(m.id) >= ?
 	"""
-	
+
 	params = list(teams)
 	params.append(date_str)
 	params.append(min_wins) # type: ignore

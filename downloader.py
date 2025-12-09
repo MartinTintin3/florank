@@ -131,7 +131,8 @@ def store_event_bout_data(data: api_types.BoutsResponse, url: str = "", progress
 			if grad_year is None:
 				grad_year = utils.infer_grad_year_from_post(person_id)
 
-			if not db.wrestler_exists(conn, person_id):
+			existing_wrestler = db.get_wrestler(conn, person_id)
+			if existing_wrestler is None:
 				db.create_wrestler(
 					conn,
 					wrestler_id=person_id,
@@ -142,10 +143,11 @@ def store_event_bout_data(data: api_types.BoutsResponse, url: str = "", progress
 					teamId=team_id,
 				)
 			else:
+				grad_update = grad_year if (grad_year is not None and existing_wrestler["gradYear"] is None) else None
 				db.update_wrestler(
 					conn,
 					wrestler_id=person_id,
-					gradYear=grad_year,
+					gradYear=grad_update,
 					dateOfBirth=attrs.get("dateOfBirth"),
 					teamId=team_id,
 					name=f"{attrs.get('firstName', '')} {attrs.get('lastName', '')}".strip(),

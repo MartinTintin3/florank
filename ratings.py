@@ -702,6 +702,8 @@ def main() -> None:
 	grad_overrides: dict[str, int] = overrides.get("grad_years", {})
 	team_overrides: dict[str, str] = overrides.get("teams", {})
 	team_override_meta = utils.get_team_metadata(team_overrides.values())
+	manual_override_ids = set(weight_overrides.keys()) | set(grad_overrides.keys()) | set(team_overrides.keys())
+	active_wrestlers.update(manual_override_ids - excluded_ids)
 
 	weight_filter: set[str] | None = None
 	if args.weights:
@@ -741,10 +743,13 @@ def main() -> None:
 	final_result = run_simulation(periods, matches_by_period, active_wrestlers, chosen_tau)
 
 	info = utils.get_wrestler_info(final_result.ratings.keys())
+	grad_years: dict[str, int | None] = {wrestler_id: meta.get("gradYear") for wrestler_id, meta in info.items()}
+	for wrestler_id, override_year in grad_overrides.items():
+		grad_years[wrestler_id] = override_year
 	current_school_year = utils.get_school_year(datetime.now(timezone.utc))
 	allowed_ids = set()
-	for wrestler_id, meta in info.items():
-		grad_year = grad_overrides.get(wrestler_id, meta.get("gradYear"))
+	for wrestler_id in info.keys():
+		grad_year = grad_years.get(wrestler_id)
 		if wrestler_id in excluded_ids:
 			continue
 		if args.grad_year is not None:
@@ -758,7 +763,7 @@ def main() -> None:
 			if wrestler_id in excluded_ids:
 				continue
 			if wrestler_id not in info:
-				grad_year = grad_overrides.get(wrestler_id)
+				grad_year = grad_years.get(wrestler_id)
 				if grad_year is not None and grad_year <= current_school_year:
 					continue
 				allowed_ids.add(wrestler_id)
@@ -772,7 +777,6 @@ def main() -> None:
 	for wrestler_id, team_id in team_overrides.items():
 		teams[wrestler_id] = team_id
 	team_names = {wrestler_id: meta.get("teamName") for wrestler_id, meta in info.items()}
-	grad_years = {wrestler_id: grad_overrides.get(wrestler_id, meta.get("gradYear")) for wrestler_id, meta in info.items()}
 	sections = {wrestler_id: meta.get("section") for wrestler_id, meta in info.items()}
 	divisions = {wrestler_id: meta.get("division") for wrestler_id, meta in info.items()}
 	# Apply team override metadata
@@ -781,12 +785,6 @@ def main() -> None:
 		team_names[wrestler_id] = team_meta.get("name", teams.get(wrestler_id))
 		sections[wrestler_id] = team_meta.get("section", sections.get(wrestler_id))
 		divisions[wrestler_id] = team_meta.get("division", divisions.get(wrestler_id))
-	for wrestler_id, grad_year in grad_overrides.items():
-		grad_years[wrestler_id] = grad_year
-	# Ensure grad overrides apply to wrestlers only seen in overrides
-	for wrestler_id, team_id in team_overrides.items():
-		if wrestler_id not in grad_years and wrestler_id in grad_overrides:
-			grad_years[wrestler_id] = grad_overrides[wrestler_id]
 	team_metadata: dict[str, dict[str, Any]] = {
 		team_id: {
 			"name": meta.get("name"),

@@ -36,7 +36,7 @@ def parse_args() -> argparse.Namespace:
 		"events_file",
 		type=Path,
 		nargs="?",
-		default=Path("events/2025.json"),
+		default=Path("events/2022.json"),
 		help="Path to the JSON file containing events metadata.",
 	)
 	parser.add_argument(
@@ -115,13 +115,13 @@ def process_events(events: Sequence[Mapping]) -> None:
 				or "Unnamed Event"
 			)
 			if not event.get("hasBrackets", False):
-				progress.console.print(f"[yellow]Skipping event {event_name} without brackets")
+				#progress.console.print(f"[yellow]Skipping event {event_name} without brackets")
 				progress.advance(download_task)
 				progress.advance(store_task)
 				continue
 
 			if db.event_exists(db.get_connection(), event_id):
-				progress.console.print(f"[blue]Event {event_name} already exists in the database, skipping.")
+				#progress.console.print(f"[blue]Event {event_name} already exists in the database, skipping.")
 				progress.advance(download_task)
 				progress.advance(store_task)
 				continue
